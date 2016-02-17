@@ -27,6 +27,7 @@ import (
 	"github.com/reborndb/reborn/pkg/proxy/parser"
 	"github.com/reborndb/reborn/pkg/proxy/redisconn"
 	topo "github.com/reborndb/reborn/pkg/proxy/router/topology"
+	tknet "github.com/toolkits/net"
 )
 
 const (
@@ -734,10 +735,11 @@ func NewServer(conf *Conf) *Server {
 		log.Fatalf("bad addr %s", addr)
 	}
 
-	hname, err := os.Hostname()
-	if err != nil {
-		log.Fatal("get host name failed", err)
-	}
+    local_addrs, err := tknet.IntranetIP()
+    if err != nil {
+        log.Fatal("get host local ip addr failed", err)
+    }   
+    hname := local_addrs[0]
 
 	s.pi.Addr = hname + ":" + addrs[1]
 
